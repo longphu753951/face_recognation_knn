@@ -4,11 +4,16 @@ import cv2
 import face_recognition
 import pickle
 from face_recognition.face_recognition_cli import image_files_in_folder
+import mysql.connector
 from Attendance import attendance
 
 
 if __name__ == "__main__":
+    cnx = mysql.connector.connect(user='root', password='ToFu;475632891',
+                              host='127.0.0.1',
+                              database='attendance')
     print("Training KNN classifier...")
+    #Tiến hành trai những gương mặt ở tệp image_knn/train và sau đó trả về file clf gồm các model đã train knn
     classifier = train("image_knn/train", model_save_path="trained_knn_model.clf", n_neighbors=2)
     print("Training complete!")
 

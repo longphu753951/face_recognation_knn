@@ -12,18 +12,18 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
     X = []
     y = []
 
-    # Loop through each person in the training set
+    # Từng người sẽ có một file riêng và sẽ có ảnh trong đó
     for class_dir in os.listdir(train_dir):
         if not os.path.isdir(os.path.join(train_dir, class_dir)):
             continue
 
-        # Loop through each training image for the current person
+        # lặp từng bức ảnh của người hiện tại
         for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
             image = face_recognition.load_image_file(img_path)
             face_bounding_boxes = face_recognition.face_locations(image)
 
             if len(face_bounding_boxes) != 1:
-                # If there are no people (or too many people) in a training image, skip the image.
+                # Bức ảnh này có quả nhiều người hoặc là không thấy mặt của chủ thể
                 if verbose:
                     print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(face_bounding_boxes) < 1 else "Found more than one face"))
             else:
