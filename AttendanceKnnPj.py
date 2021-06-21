@@ -4,14 +4,12 @@ import cv2
 import face_recognition
 import pickle
 from face_recognition.face_recognition_cli import image_files_in_folder
-import mysql.connector
 from Attendance import attendance
 
 
 if __name__ == "__main__":
-    cnx = mysql.connector.connect(user='root', password='ToFu;475632891',
-                              host='127.0.0.1',
-                              database='attendance')
+    
+
     print("Training KNN classifier...")
     #Tiến hành trai những gương mặt ở tệp image_knn/train và sau đó trả về file clf gồm các model đã train knn
     classifier = train("image_knn/train", model_save_path="trained_knn_model.clf", n_neighbors=2)
@@ -27,7 +25,8 @@ if __name__ == "__main__":
         # Note: You can pass in either a classifier file name or a classifier model instance
         predictions = predict(X_img_path=rgb_frame, model_path="trained_knn_model.clf")
 
-        for name, (top, right, bottom, left) in predictions:
+        for name, (top, right, bottom, left),percentage in predictions:
+            percentage = "accuracy:" +str(round(percentage[0]*100,2))
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
             if(name != "unknown"):
                 attendance(name)
@@ -35,6 +34,7 @@ if __name__ == "__main__":
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+            cv2.putText(frame, percentage, (left + 6, bottom +50), font, 1.0, (255, 255, 255), 1)
         # Display the resulting image
         cv2.imshow('Video', frame)
 
